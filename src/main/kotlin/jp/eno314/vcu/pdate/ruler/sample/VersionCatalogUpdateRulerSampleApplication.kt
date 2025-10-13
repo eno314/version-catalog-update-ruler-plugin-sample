@@ -6,6 +6,7 @@ import org.springframework.boot.runApplication
 @SpringBootApplication
 class VersionCatalogUpdateRulerSampleApplication
 
+@Suppress("SpreadOperator")
 fun main(args: Array<String>) {
-	runApplication<VersionCatalogUpdateRulerSampleApplication>(*args)
+    runApplication<VersionCatalogUpdateRulerSampleApplication>(*args)
 }

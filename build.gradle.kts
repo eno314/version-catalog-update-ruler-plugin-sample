@@ -1,8 +1,10 @@
 plugins {
-	alias(libs.plugins.kotlin.jvm)
-	alias(libs.plugins.kotlin.spring)
-	alias(libs.plugins.spring.boot)
-	alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.ktlint)
 }
 
 group = "jp.eno314"
@@ -10,30 +12,34 @@ version = "0.0.1-SNAPSHOT"
 description = "Demo project for Spring Boot"
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation(libs.spring.boot.starter.web)
-	implementation(libs.jackson.module.kotlin)
-	implementation(libs.kotlin.reflect)
-	testImplementation(libs.spring.boot.starter.test)
-	testImplementation(libs.kotlin.test.junit5)
-	testRuntimeOnly(libs.junit.platform.launcher)
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.jackson.module.kotlin)
+    implementation(libs.kotlin.reflect)
+    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.kotlin.test.junit5)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 kotlin {
-	compilerOptions {
-		freeCompilerArgs.addAll("-Xjsr305=strict")
-	}
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+tasks.test {
+    useJUnitPlatform()
+}
+
+detekt {
+    source.setFrom(files("src/main/kotlin"))
 }
