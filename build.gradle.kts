@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.version.catalog.update.ruler)
 }
 
 group = "jp.eno314"
@@ -51,4 +52,11 @@ tasks.jacocoTestReport {
 
 detekt {
     source.setFrom(files("src/main/kotlin"))
+}
+
+versionCatalogUpdateRuler {
+    onlyStable.set(true)
+    pinMajorVersion.set(true)
+    pinMinorVersion.set(true)
+    onlyArtifactVersion.set(true)
 }

@@ -1,23 +1,25 @@
 [versions]
 detekt = "1.23.8"
+jackson-kotlin = "2.15.4"
 kotlin = "2.0.21"
 ktlint = "13.1.0"
 spring-boot = "3.5.6"
 spring-dependency-management = "1.1.7"
-jackson-kotlin = "2.15.3"
+version-catalog-update-ruler = "0.0.1"
 
 [libraries]
-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson-kotlin" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
-kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+version-catalog-update-ruler = { id = "io.github.eno314.version-catalog-update-ruler", version.ref = "version-catalog-update-ruler" }
