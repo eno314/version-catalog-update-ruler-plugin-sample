@@ -1,6 +1,8 @@
 name: Daily Version Catalog Update
 
 on:
+  pull_request:
+    branches: [ "main" ]
   schedule:
     - cron: '15 19 * * *' # Daily at 19:15 UTC (04:15 JST)
   workflow_dispatch:
