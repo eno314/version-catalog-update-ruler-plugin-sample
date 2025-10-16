@@ -1,5 +1,7 @@
 # Version Catalog Update Ruler Sample
 
+[![codecov](https://codecov.io/gh/eno314/version-catalog-update-ruler-plugin-sample/graph/badge.svg?token=SSZJM6GALR)](https://codecov.io/gh/eno314/version-catalog-update-ruler-plugin-sample)
+
 This repository is a minimal sample implementation demonstrating the usage of the Gradle plugin:
 
 > https://github.com/eno314/version-catalog-update-ruler-plugin
