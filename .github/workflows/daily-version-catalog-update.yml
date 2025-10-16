@@ -12,6 +12,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   update-version-catalog:
@@ -32,16 +33,53 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Determine branch name (fixed)
+        run: echo "BRANCH_NAME=chore/version-catalog-update" >> "$GITHUB_ENV"
+
       - name: Run version catalog update
         run: ./gradlew --no-daemon versionCatalogUpdate
 
       - name: Verify build & tests
         run: ./gradlew --no-daemon build
 
-      - name: Determine branch name
-        run: echo "BRANCH_NAME=chore/version-catalog-update-$(date +'%Y%m%d')" >> "$GITHUB_ENV"
+      - name: Check for version catalog changes
+        id: check-diff
+        run: |
+          # Only look at libs.versions.toml changes
+          if git diff --quiet HEAD -- gradle/libs.versions.toml; then
+            echo "CATALOG_CHANGED=false" >> "$GITHUB_ENV"
+            echo "No changes detected in gradle/libs.versions.toml" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "CATALOG_CHANGED=true" >> "$GITHUB_ENV"
+            # Capture a concise diff summary (name-status + unified diff)
+            echo "DIFF_SUMMARY<<EOF" >> "$GITHUB_ENV"
+            git diff --name-status -- gradle/libs.versions.toml >> "$GITHUB_ENV"
+            echo "" >> "$GITHUB_ENV"
+            git diff -- gradle/libs.versions.toml | sed 's/^/    /' >> "$GITHUB_ENV"
+            echo "EOF" >> "$GITHUB_ENV"
+            echo "Changes detected in gradle/libs.versions.toml" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Close existing PR for fixed branch if any
+        if: env.CATALOG_CHANGED == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = process.env.BRANCH_NAME;
+            const { owner, repo } = context.repo;
+            const prs = await github.rest.pulls.list({ owner, repo, state: 'open', head: `${owner}:${branch}` });
+            if (prs.data.length === 0) {
+              core.info(`No open PRs found for branch '${branch}'.`);
+            } else {
+              for (const pr of prs.data) {
+                await github.rest.pulls.update({ owner, repo, pull_number: pr.number, state: 'closed' });
+                core.info(`Closed existing PR #${pr.number} for branch '${branch}'.`);
+                await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body: 'Closing superseded PR before creating a fresh one for the latest version catalog update.' });
+              }
+            }
 
       - name: Create Pull Request if changes
+        if: env.CATALOG_CHANGED == 'true'
         id: create-pull-request
         uses: peter-evans/create-pull-request@v7
         with:
@@ -56,6 +94,11 @@ jobs:
             Task executed: `./gradlew versionCatalogUpdate` followed by a full `./gradlew build` to ensure the update passes compile, lint, and tests.
 
             Only stable, pinned major/minor (patch-level) updates are considered per plugin configuration.
+
+            Diff summary (libs.versions.toml):
+            ```
+            ${{ env.DIFF_SUMMARY }}
+            ```
           labels: dependencies, automated
           add-paths: |
             gradle/libs.versions.toml
@@ -67,3 +110,7 @@ jobs:
       - name: Output result
         if: steps.create-pull-request.outputs.pull-request-number
         run: echo "Created/updated PR #${{ steps.create-pull-request.outputs.pull-request-number }}"
+
+      - name: No changes outcome
+        if: env.CATALOG_CHANGED == 'false'
+        run: echo "No version catalog changes -> no PR created and any existing open PR retained."

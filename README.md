@@ -56,41 +56,32 @@ Run the `./gradlew versionCatalogUpdate` task to see how the plugin filters and 
 A scheduled workflow (`.github/workflows/daily-version-catalog-update.yml`) runs once per day and attempts to update
 `gradle/libs.versions.toml` using the plugin rules defined above.
 
-Workflow key points:
+Updated workflow key points:
 
-- Schedule: `cron: '15 1 * * *'` (01:15 UTC daily). Adjust for your timezone if needed.
-- Task executed: `./gradlew versionCatalogUpdate` followed by a full `./gradlew build` (compile, lint, tests, coverage)
-  to
-  ensure the suggested updates are safe.
-- Branch naming: `chore/version-catalog-update-YYYYMMDD` (same branch reused per day if rerun).
-- Creates / updates a PR only when there are changes limited to `gradle/libs.versions.toml`.
-- Conservative update policy enforced by plugin settings (stable patch-level only).
-- Manual trigger: you can run it on demand via the GitHub Actions UI (`workflow_dispatch`).
-- Concurrency group prevents overlapping runs.
+- Schedule: `cron: '15 19 * * *'` → 19:15 UTC daily (JST 04:15). Adjust as needed.
+- Task sequence: `versionCatalogUpdate` then full `build` (compilation, lint, tests) to validate updates.
+- Branch naming: Fixed branch `chore/version-catalog-update` (no date suffix).
+- PR replacement: Before creating a new PR, any existing open PR for the fixed branch is automatically closed with a
+  comment.
+- Diff summary: The PR body includes a concise unified diff of `gradle/libs.versions.toml`.
+- Change detection: If `gradle/libs.versions.toml` has no diff, no PR is created and any existing PR is retained.
+- Conservative update policy: Stable patch-level updates only (per plugin config).
+- Manual trigger: Available via `workflow_dispatch`.
+- Concurrency: Prevents overlapping runs.
 
-Customization ideas:
-
-| Goal                     | Change                                        |
-|--------------------------|-----------------------------------------------|
-| Different time           | Edit the `cron` expression (uses UTC).        |
-| Allow minor updates      | Set `pinMinorVersion.set(false)`.             |
-| Allow major updates      | Set `pinMajorVersion.set(false)`.             |
-| Accept pre-releases      | Set `onlyStable.set(false)`.                  |
-| Broader file scope       | Remove or expand `add-paths` list.            |
-| Branch naming convention | Modify the echo step that sets `BRANCH_NAME`. |
-
-Minimal excerpt of the workflow logic:
+Excerpt of relevant workflow steps:
 
 ```yaml
 - run: ./gradlew --no-daemon versionCatalogUpdate
 - run: ./gradlew --no-daemon build
-- uses: peter-evans/create-pull-request@v6
-  with:
-    add-paths: |
-      gradle/libs.versions.toml
+- name: Check for version catalog changes
+  run: git diff --quiet HEAD -- gradle/libs.versions.toml || echo 'Changes detected'
+- name: Close existing PR for fixed branch if any
+  uses: actions/github-script@v7
+- uses: peter-evans/create-pull-request@v7
 ```
 
-If no eligible updates are found, the workflow exits cleanly without creating a PR.
+If no eligible updates are found, the workflow exits cleanly without creating a new PR.
 
 ## License
 
