@@ -1,8 +1,6 @@
 name: Daily Version Catalog Update
 
 on:
-  pull_request:
-    branches: [ "main" ]
   schedule:
     - cron: '15 19 * * *' # Daily at 19:15 UTC (04:15 JST)
   workflow_dispatch:
@@ -86,7 +84,6 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           branch: ${{ env.BRANCH_NAME }}
-          base: add-update-check-batch
           title: "chore: update version catalog"
           commit-message: "chore: update version catalog"
           body: |
