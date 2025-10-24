@@ -1,9 +1,11 @@
 name: Daily Version Catalog Update
 
 on:
-  schedule:
-    - cron: '15 19 * * *' # Daily at 19:15 UTC (04:15 JST)
-  workflow_dispatch:
+  # schedule:
+  #   - cron: '15 19 * * *' # Daily at 19:15 UTC (04:15 JST)
+  # workflow_dispatch:
+  pull_request:
+    branches: [ "main" ]
 
 concurrency:
   group: version-catalog-update
@@ -83,6 +85,7 @@ jobs:
         id: create-pull-request
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.PAT }}
           branch: ${{ env.BRANCH_NAME }}
           title: "chore: update version catalog"
           commit-message: "chore: update version catalog"
