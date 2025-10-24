@@ -83,6 +83,7 @@ jobs:
         id: create-pull-request
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.PAT }}
           branch: ${{ env.BRANCH_NAME }}
           title: "chore: update version catalog"
           commit-message: "chore: update version catalog"
