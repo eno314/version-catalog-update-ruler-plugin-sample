@@ -106,7 +106,9 @@ jobs:
 
       - name: Output result
         if: steps.create-pull-request.outputs.pull-request-number
-        run: echo "Created/updated PR #${{ steps.create-pull-request.outputs.pull-request-number }}"
+        env:
+          PR_NUMBER: ${{ steps.create-pull-request.outputs.pull-request-number }}
+        run: echo "Created/updated PR #${PR_NUMBER}"
 
       - name: No changes outcome
         if: env.CATALOG_CHANGED == 'false'
