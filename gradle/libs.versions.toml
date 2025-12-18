@@ -3,7 +3,7 @@ detekt = "1.23.8"
 jackson-kotlin = "2.15.4"
 kotlin = "2.0.21"
 ktlint = "13.1.0"
-spring-boot = "3.5.8"
+spring-boot = "3.5.9"
 spring-dependency-management = "1.1.7"
 version-catalog-update-ruler = "0.0.1"
 
