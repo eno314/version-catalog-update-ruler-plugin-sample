@@ -1,19 +1,18 @@
 [versions]
 detekt = "2.0.0-alpha.2"
-jackson-kotlin = "2.21.2"
 kotlin = "2.3.0"
 ktlint = "14.2.0"
-spring-boot = "3.5.14"
+spring-boot = "4.0.5"
 spring-dependency-management = "1.1.7"
 version-catalog-update-ruler = "0.0.3"
 
 [libraries]
-jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson-kotlin" }
+jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
 
 [plugins]
 detekt = { id = "dev.detekt", version.ref = "detekt" }
