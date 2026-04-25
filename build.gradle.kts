@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
     testImplementation(libs.spring.boot.starter.test)
