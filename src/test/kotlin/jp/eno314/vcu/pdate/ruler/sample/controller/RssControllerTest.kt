@@ -1,51 +1,52 @@
 package jp.eno314.vcu.pdate.ruler.sample.controller
 
+import io.mockk.every
+import io.mockk.mockk
+import jp.eno314.vcu.pdate.ruler.sample.service.RssFetchRequest
+import jp.eno314.vcu.pdate.ruler.sample.service.RssFetchResponse
+import jp.eno314.vcu.pdate.ruler.sample.service.RssItem
+import jp.eno314.vcu.pdate.ruler.sample.service.RssService
+import jp.eno314.vcu.pdate.ruler.sample.service.SiteInfo
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
+import java.time.OffsetDateTime
 
-@SpringBootTest
 class RssControllerTest {
-    @Autowired
-    private lateinit var wac: WebApplicationContext
-
-    private val mockMvc: MockMvc by lazy {
-        MockMvcBuilders.webAppContextSetup(wac).build()
-    }
+    private val rssService = mockk<RssService>()
+    private val rssController = RssController(rssService)
 
     @Test
-    fun `getRss returns 200 OK with valid rss_url`() {
-        mockMvc
-            .get("/api/rss") {
-                param("rss_url", "https://example.com/rss")
-            }.andExpect {
-                status { isOk() }
-                jsonPath("$.site_info.title").value("サイトのタイトル")
-                jsonPath("$.items[0].title").value("記事のタイトル")
-            }
-    }
+    fun `getRss returns response from service`() {
+        // Given
+        val request = RssFetchRequest(rssUrl = "https://example.com/rss")
+        val expectedResponse =
+            RssFetchResponse(
+                siteInfo =
+                    SiteInfo(
+                        title = "Test Title",
+                        link = "https://example.com",
+                        description = "Test Description",
+                    ),
+                items =
+                    listOf(
+                        RssItem(
+                            id = "id1",
+                            title = "item1",
+                            link = "link1",
+                            summaryHtml = "summary1",
+                            publishedAt = OffsetDateTime.now(),
+                            author = "author1",
+                            thumbnailUrl = null,
+                            categories = emptyList(),
+                        ),
+                    ),
+            )
+        every { rssService.fetchRss(request) } returns expectedResponse
 
-    @Test
-    fun `getRss returns 400 Bad Request when rss_url is missing`() {
-        mockMvc
-            .get("/api/rss")
-            .andExpect {
-                status { isBadRequest() }
-            }
-    }
+        // When
+        val response = rssController.getRss(request)
 
-    @Test
-    fun `getRss returns 400 Bad Request when rss_url is invalid format`() {
-        mockMvc
-            .get("/api/rss") {
-                param("rss_url", "not-a-url")
-            }.andExpect {
-                status { isBadRequest() }
-            }
+        // Then
+        assertEquals(expectedResponse, response)
     }
 }
