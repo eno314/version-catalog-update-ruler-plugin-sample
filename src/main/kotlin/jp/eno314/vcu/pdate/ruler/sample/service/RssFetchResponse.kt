@@ -6,13 +6,13 @@ import java.time.OffsetDateTime
 data class RssFetchResponse(
     @field:JsonProperty("site_info")
     val siteInfo: SiteInfo,
-    val items: List<RssItem>
+    val items: List<RssItem>,
 )
 
 data class SiteInfo(
     val title: String,
     val link: String,
-    val description: String
+    val description: String,
 )
 
 data class RssItem(
@@ -26,5 +26,5 @@ data class RssItem(
     val author: String,
     @field:JsonProperty("thumbnail_url")
     val thumbnailUrl: String?,
-    val categories: List<String>
+    val categories: List<String>,
 )

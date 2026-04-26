@@ -8,5 +8,5 @@ data class RssFetchRequest(
     @field:NotBlank
     @field:URL
     @BindParam("rss_url")
-    val rssUrl: String?
+    val rssUrl: String?,
 )

@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/rss")
 class RssController(
-    private val rssService: RssService
+    private val rssService: RssService,
 ) {
     @GetMapping
-    fun getRss(@Valid request: RssFetchRequest): RssFetchResponse {
-        return rssService.fetchRss(request)
-    }
+    fun getRss(
+        @Valid request: RssFetchRequest,
+    ): RssFetchResponse = rssService.fetchRss(request)
 }
