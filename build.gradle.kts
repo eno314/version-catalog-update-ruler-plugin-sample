@@ -23,12 +23,38 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    create("testKit") {
+        compileClasspath += sourceSets.main.get().output + sourceSets.test.get().output
+        runtimeClasspath += sourceSets.main.get().output + sourceSets.test.get().output
+    }
+}
+
+val testKitImplementation by configurations.getting {
+    extendsFrom(configurations.testImplementation.get())
+}
+
+dependencies {
+    "testKitImplementation"(gradleTestKit())
+}
+
+val testKit by tasks.registering(Test::class) {
+    description = "Runs the functional tests."
+    group = "verification"
+    testClassesDirs = sourceSets["testKit"].output.classesDirs
+    classpath = sourceSets["testKit"].runtimeClasspath
+    mustRunAfter(tasks.test)
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation(libs.spring.boot.starter.webmvc)
+    implementation(libs.spring.boot.starter.validation)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.mockk)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
