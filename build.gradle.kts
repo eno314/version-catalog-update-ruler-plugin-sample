@@ -62,4 +62,11 @@ versionCatalogUpdateRuler {
     pinMajorVersion.set(true)
     pinMinorVersion.set(true)
     onlyArtifactVersion.set(true)
+
+    library("io.mockk:mockk") {
+        onlyStable.set(true)
+        pinMajorVersion.set(true)
+        pinMinorVersion.set(false)
+        onlyArtifactVersion.set(true)
+    }
 }
