@@ -61,7 +61,7 @@ class RssAtomParserTest {
         // Second entry assertions
         assertThat(result.entries[1].id).isEqualTo("https://test.example.com/article/2")
         assertThat(result.entries[1].title).isEqualTo("Test Entry 2")
-        assertThat(result.entries[1].author).isEqualTo("著者名") // Default value when author is missing
+        assertThat(result.entries[1].author).isNull() // No longer has default value
     }
 
     @Test

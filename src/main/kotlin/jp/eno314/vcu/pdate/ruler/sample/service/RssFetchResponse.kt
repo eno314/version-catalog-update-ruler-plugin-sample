@@ -23,19 +23,19 @@ data class SiteInfo(
 
 data class RssItem(
     @Schema(description = "Unique ID of the item", example = "12345")
-    val id: String,
+    val id: String?,
     @Schema(description = "Title of the item", example = "Example Article")
     val title: String,
     @Schema(description = "Link to the item", example = "https://example.com/articles/1")
     val link: String,
     @field:JsonProperty("summary_html")
     @Schema(description = "Summary of the item in HTML format", example = "<p>This is an example summary.</p>")
-    val summaryHtml: String,
+    val summaryHtml: String?,
     @field:JsonProperty("published_at")
     @Schema(description = "Publication date and time of the item")
     val publishedAt: OffsetDateTime,
     @Schema(description = "Author of the item", example = "John Doe")
-    val author: String,
+    val author: String?,
     @field:JsonProperty("thumbnail_url")
     @Schema(description = "URL of the thumbnail image", example = "https://example.com/thumb.jpg")
     val thumbnailUrl: String?,

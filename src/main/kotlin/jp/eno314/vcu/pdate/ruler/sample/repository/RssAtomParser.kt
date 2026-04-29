@@ -64,12 +64,12 @@ class RssAtomParser : RssParser() {
             val entryNode = entryNodes.item(i)
             val entryXpath = xpathFactory.newXPath()
 
-            val id = entryXpath.evaluateRequiredString("id/text()", entryNode, "entry/id")
+            val id = entryXpath.evaluateStringOrNull("id/text()", entryNode)
             val title = entryXpath.evaluateRequiredString("title/text()", entryNode, "entry/title")
             val link = entryXpath.evaluateRequiredString("link/@href", entryNode, "entry/link")
-            val summary = entryXpath.evaluateRequiredString("summary/text()", entryNode, "entry/summary")
+            val summary = entryXpath.evaluateStringOrNull("summary/text()", entryNode)
             val publishedStr = entryXpath.evaluateStringOrNull("published/text()", entryNode) ?: ""
-            val author = entryXpath.evaluateStringOrNull("author/name/text()", entryNode) ?: "著者名"
+            val author = entryXpath.evaluateStringOrNull("author/name/text()", entryNode)
             val thumbnailUrl = entryXpath.evaluateStringOrNull("media:thumbnail/@url", entryNode)
             val categoriesStr = entryXpath.evaluate("category/@term", entryNode, XPathConstants.NODESET) as NodeList
 

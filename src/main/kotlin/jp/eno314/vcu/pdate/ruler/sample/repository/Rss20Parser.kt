@@ -61,10 +61,10 @@ class Rss20Parser : RssParser() {
             val itemNode = itemNodes.item(i)
             val itemXpath = xpathFactory.newXPath()
 
-            val guid = itemXpath.evaluateRequiredString("guid/text()", itemNode, "item/guid")
+            val guid = itemXpath.evaluateStringOrNull("guid/text()", itemNode)
             val title = itemXpath.evaluateRequiredString("title/text()", itemNode, "item/title")
             val link = itemXpath.evaluateRequiredString("link/text()", itemNode, "item/link")
-            val description = itemXpath.evaluateRequiredString("description/text()", itemNode, "item/description")
+            val description = itemXpath.evaluateStringOrNull("description/text()", itemNode)
             val pubDateStr = itemXpath.evaluateStringOrNull("pubDate/text()", itemNode) ?: ""
             val author = itemXpath.evaluateStringOrNull("author/text()", itemNode)
             val thumbnailUrl = itemXpath.evaluateStringOrNull("media:thumbnail/@url", itemNode)

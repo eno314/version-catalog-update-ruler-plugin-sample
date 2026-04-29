@@ -16,10 +16,10 @@ data class Rss20ChannelDto(
 )
 
 data class Rss20ItemDto(
-    val guid: String,
+    val guid: String?,
     val title: String,
     val link: String,
-    val description: String,
+    val description: String?,
     val pubDate: OffsetDateTime,
     val author: String?,
     val thumbnailUrl: String?,
@@ -38,12 +38,12 @@ data class AtomFeedDto(
 )
 
 data class AtomEntryDto(
-    val id: String,
+    val id: String?,
     val title: String,
     val link: String,
-    val summary: String,
+    val summary: String?,
     val published: OffsetDateTime,
-    val author: String,
+    val author: String?,
     val thumbnailUrl: String?,
     val categories: List<String>,
 )
