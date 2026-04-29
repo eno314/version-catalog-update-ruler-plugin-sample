@@ -2,11 +2,7 @@ package jp.eno314.vcu.pdate.ruler.sample.controller
 
 import io.mockk.every
 import io.mockk.mockk
-import jp.eno314.vcu.pdate.ruler.sample.service.RssFetchRequest
-import jp.eno314.vcu.pdate.ruler.sample.service.RssFetchResponse
-import jp.eno314.vcu.pdate.ruler.sample.service.RssItem
-import jp.eno314.vcu.pdate.ruler.sample.service.RssService
-import jp.eno314.vcu.pdate.ruler.sample.service.SiteInfo
+import jp.eno314.vcu.pdate.ruler.sample.service.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
@@ -18,7 +14,7 @@ class RssControllerTest {
     @Test
     fun `getRss returns response from service`() {
         // Given
-        val request = RssFetchRequest(rss_url = "https://example.com/rss")
+        val request = RssFetchRequest(rssUrl = "https://example.com/rss")
         val expectedResponse =
             RssFetchResponse(
                 siteInfo =
