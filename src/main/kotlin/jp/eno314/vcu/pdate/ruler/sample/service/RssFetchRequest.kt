@@ -8,6 +8,5 @@ data class RssFetchRequest(
     @field:NotBlank
     @field:URL
     @Schema(description = "The URL of the RSS feed to fetch", example = "https://example.com/rss", required = true)
-    @Suppress("PropertyName")
     val rssUrl: String,
 )
