@@ -24,17 +24,52 @@ class RssParser {
         val document = parseXml(xmlString)
         val xpath = xpathFactory.newXPath()
 
-        // Parse channel information
-        val channelTitle =
-            (xpath.evaluate("//channel/title/text()", document, XPathConstants.STRING) as String).takeIf { it.isNotEmpty() } ?: "サイトのタイトル"
-        val channelLink =
-            (xpath.evaluate("//channel/link/text()", document, XPathConstants.STRING) as String).takeIf { it.isNotEmpty() }
-                ?: "https://example.com"
-        val channelDescription =
-            (xpath.evaluate("//channel/description/text()", document, XPathConstants.STRING) as String).takeIf { it.isNotEmpty() }
-                ?: "サイトの概要説明"
+        val channel = parseRss20Channel(document, xpath)
+        val items = parseRss20Items(document, xpath)
 
-        // Parse items
+        return Rss20FetchDto(
+            channel = channel,
+            items = items.takeIf { it.isNotEmpty() } ?: getDefaultRss20Items(),
+        )
+    }
+
+    fun parseAtom(xmlString: String): AtomFetchDto {
+        val document = parseXml(xmlString)
+        val xpath = xpathFactory.newXPath()
+
+        val feed = parseAtomFeed(document, xpath)
+        val entries = parseAtomEntries(document, xpath)
+
+        return AtomFetchDto(
+            feed = feed,
+            entries = entries.takeIf { it.isNotEmpty() } ?: getDefaultAtomEntries(),
+        )
+    }
+
+    private fun parseRss20Channel(
+        document: Document,
+        xpath: javax.xml.xpath.XPath,
+    ): Rss20ChannelDto {
+        val channelTitle =
+            (
+                xpath.evaluate("//channel/title/text()", document, XPathConstants.STRING) as String
+            ).takeIf { it.isNotEmpty() } ?: "サイトのタイトル"
+        val channelLink =
+            (
+                xpath.evaluate("//channel/link/text()", document, XPathConstants.STRING) as String
+            ).takeIf { it.isNotEmpty() } ?: "https://example.com"
+        val channelDescription =
+            (
+                xpath.evaluate("//channel/description/text()", document, XPathConstants.STRING) as String
+            ).takeIf { it.isNotEmpty() } ?: "サイトの概要説明"
+
+        return Rss20ChannelDto(title = channelTitle, link = channelLink, description = channelDescription)
+    }
+
+    private fun parseRss20Items(
+        document: Document,
+        xpath: javax.xml.xpath.XPath,
+    ): List<Rss20ItemDto> {
         val itemNodes = xpath.evaluate("//item", document, XPathConstants.NODESET) as NodeList
         val items = mutableListOf<Rss20ItemDto>()
 
@@ -47,15 +82,13 @@ class RssParser {
             val link = itemXpath.evaluate("link/text()", itemNode, XPathConstants.STRING) as String
             val description = itemXpath.evaluate("description/text()", itemNode, XPathConstants.STRING) as String
             val pubDateStr = itemXpath.evaluate("pubDate/text()", itemNode, XPathConstants.STRING) as String
-            val author = (itemXpath.evaluate("author/text()", itemNode, XPathConstants.STRING) as String).takeIf { it.isNotEmpty() }
-            val thumbnailUrl =
+            val author =
                 (
-                    itemXpath.evaluate(
-                        "media:thumbnail/@url",
-                        itemNode,
-                        XPathConstants.STRING,
-                    ) as? String
-                )?.takeIf { it.isNotEmpty() }
+                    itemXpath.evaluate("author/text()", itemNode, XPathConstants.STRING) as String
+                ).takeIf { it.isNotEmpty() }
+            val thumbnailUrl =
+                (itemXpath.evaluate("media:thumbnail/@url", itemNode, XPathConstants.STRING) as? String)
+                    ?.takeIf { it.isNotEmpty() }
             val categoriesStr = itemXpath.evaluate("category/text()", itemNode, XPathConstants.NODESET) as NodeList
 
             val pubDate = parsePubDate(pubDateStr)
@@ -78,39 +111,32 @@ class RssParser {
             )
         }
 
-        return Rss20FetchDto(
-            channel = Rss20ChannelDto(title = channelTitle, link = channelLink, description = channelDescription),
-            items =
-                items.takeIf { it.isNotEmpty() } ?: listOf(
-                    Rss20ItemDto(
-                        guid = "https://example.com/article/123",
-                        title = "記事のタイトル",
-                        link = "https://example.com/article/123",
-                        description = "<p>ヘッドラインのテキストやHTML...</p>",
-                        pubDate = OffsetDateTime.parse("2026-04-25T10:00:00Z"),
-                        author = "著者名",
-                        thumbnailUrl = "https://example.com/images/thumb.jpg",
-                        categories = listOf("テクノロジー", "プログラミング"),
-                    ),
-                ),
-        )
+        return items
     }
 
-    fun parseAtom(xmlString: String): AtomFetchDto {
-        val document = parseXml(xmlString)
-        val xpath = xpathFactory.newXPath()
-
-        // Parse feed information
+    private fun parseAtomFeed(
+        document: Document,
+        xpath: javax.xml.xpath.XPath,
+    ): AtomFeedDto {
         val feedTitle =
-            (xpath.evaluate("//feed/title/text()", document, XPathConstants.STRING) as String).takeIf { it.isNotEmpty() } ?: "サイトのタイトル"
+            (xpath.evaluate("//feed/title/text()", document, XPathConstants.STRING) as String)
+                .takeIf { it.isNotEmpty() } ?: "サイトのタイトル"
         val feedLink =
-            (xpath.evaluate("//feed/link[@rel='alternate']/@href", document, XPathConstants.STRING) as String).takeIf { it.isNotEmpty() }
-                ?: (xpath.evaluate("//feed/link/@href", document, XPathConstants.STRING) as String).takeIf { it.isNotEmpty() }
-                ?: "https://example.com"
+            (xpath.evaluate("//feed/link[@rel='alternate']/@href", document, XPathConstants.STRING) as String)
+                .takeIf { it.isNotEmpty() }
+                ?: (xpath.evaluate("//feed/link/@href", document, XPathConstants.STRING) as String)
+                    .takeIf { it.isNotEmpty() } ?: "https://example.com"
         val feedSubtitle =
-            (xpath.evaluate("//feed/subtitle/text()", document, XPathConstants.STRING) as String).takeIf { it.isNotEmpty() } ?: "サイトの概要説明"
+            (xpath.evaluate("//feed/subtitle/text()", document, XPathConstants.STRING) as String)
+                .takeIf { it.isNotEmpty() } ?: "サイトの概要説明"
 
-        // Parse entries
+        return AtomFeedDto(title = feedTitle, link = feedLink, subtitle = feedSubtitle)
+    }
+
+    private fun parseAtomEntries(
+        document: Document,
+        xpath: javax.xml.xpath.XPath,
+    ): List<AtomEntryDto> {
         val entryNodes = xpath.evaluate("//entry", document, XPathConstants.NODESET) as NodeList
         val entries = mutableListOf<AtomEntryDto>()
 
@@ -124,15 +150,11 @@ class RssParser {
             val summary = entryXpath.evaluate("summary/text()", entryNode, XPathConstants.STRING) as String
             val publishedStr = entryXpath.evaluate("published/text()", entryNode, XPathConstants.STRING) as String
             val author =
-                (entryXpath.evaluate("author/name/text()", entryNode, XPathConstants.STRING) as String).takeIf { it.isNotEmpty() } ?: "著者名"
+                (entryXpath.evaluate("author/name/text()", entryNode, XPathConstants.STRING) as String)
+                    .takeIf { it.isNotEmpty() } ?: "著者名"
             val thumbnailUrl =
-                (
-                    entryXpath.evaluate(
-                        "media:thumbnail/@url",
-                        entryNode,
-                        XPathConstants.STRING,
-                    ) as? String
-                )?.takeIf { it.isNotEmpty() }
+                (entryXpath.evaluate("media:thumbnail/@url", entryNode, XPathConstants.STRING) as? String)
+                    ?.takeIf { it.isNotEmpty() }
             val categoriesStr = entryXpath.evaluate("category/@term", entryNode, XPathConstants.NODESET) as NodeList
 
             val published = parsePublishedDate(publishedStr)
@@ -155,23 +177,36 @@ class RssParser {
             )
         }
 
-        return AtomFetchDto(
-            feed = AtomFeedDto(title = feedTitle, link = feedLink, subtitle = feedSubtitle),
-            entries =
-                entries.takeIf { it.isNotEmpty() } ?: listOf(
-                    AtomEntryDto(
-                        id = "https://example.com/article/123",
-                        title = "記事のタイトル",
-                        link = "https://example.com/article/123",
-                        summary = "<p>ヘッドラインのテキストやHTML...</p>",
-                        published = OffsetDateTime.parse("2026-04-25T10:00:00Z"),
-                        author = "著者名",
-                        thumbnailUrl = "https://example.com/images/thumb.jpg",
-                        categories = listOf("テクノロジー", "プログラミング"),
-                    ),
-                ),
-        )
+        return entries
     }
+
+    private fun getDefaultRss20Items(): List<Rss20ItemDto> =
+        listOf(
+            Rss20ItemDto(
+                guid = "https://example.com/article/123",
+                title = "記事のタイトル",
+                link = "https://example.com/article/123",
+                description = "<p>ヘッドラインのテキストやHTML...</p>",
+                pubDate = OffsetDateTime.parse("2026-04-25T10:00:00Z"),
+                author = "著者名",
+                thumbnailUrl = "https://example.com/images/thumb.jpg",
+                categories = listOf("テクノロジー", "プログラミング"),
+            ),
+        )
+
+    private fun getDefaultAtomEntries(): List<AtomEntryDto> =
+        listOf(
+            AtomEntryDto(
+                id = "https://example.com/article/123",
+                title = "記事のタイトル",
+                link = "https://example.com/article/123",
+                summary = "<p>ヘッドラインのテキストやHTML...</p>",
+                published = OffsetDateTime.parse("2026-04-25T10:00:00Z"),
+                author = "著者名",
+                thumbnailUrl = "https://example.com/images/thumb.jpg",
+                categories = listOf("テクノロジー", "プログラミング"),
+            ),
+        )
 
     private fun parseXml(xmlString: String): Document {
         val builder = documentBuilderFactory.newDocumentBuilder()
