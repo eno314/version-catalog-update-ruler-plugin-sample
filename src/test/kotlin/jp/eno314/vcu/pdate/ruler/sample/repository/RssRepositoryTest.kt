@@ -12,14 +12,20 @@ import java.net.URI
 
 class RssRepositoryTest {
     private val rssClient = mockk<RssClient>()
-    private val rssRepository = RssRepository(rssClient)
+    private val rssParser = mockk<RssParser>()
+    private val rssRepository = RssRepository(rssClient, rssParser)
 
     @Test
     fun `fetchRss should return Rss20FetchDto for RSS 2_0 format`() {
         // Arrange
         val uri = URI.create("https://example.com/rss")
         val dummyXml = """<rss version="2.0"></rss>"""
+        val expectedDto = Rss20FetchDto(
+            channel = Rss20ChannelDto(title = "サイトのタイトル", link = "https://example.com", description = "サイトの概要説明"),
+            items = emptyList(),
+        )
         every { rssClient.fetch(RssFetchRemoteRequest(uri)) } returns RssFetchRemoteResponse(dummyXml)
+        every { rssParser.parseRss20(dummyXml) } returns expectedDto
 
         // Act
         val dto = rssRepository.fetchRss(uri)
@@ -35,7 +41,12 @@ class RssRepositoryTest {
         // Arrange
         val uri = URI.create("https://example.com/atom")
         val dummyXml = """<feed></feed>"""
+        val expectedDto = AtomFetchDto(
+            feed = AtomFeedDto(title = "サイトのタイトル", link = "https://example.com", subtitle = "サイトの概要説明"),
+            entries = emptyList(),
+        )
         every { rssClient.fetch(RssFetchRemoteRequest(uri)) } returns RssFetchRemoteResponse(dummyXml)
+        every { rssParser.parseAtom(dummyXml) } returns expectedDto
 
         // Act
         val dto = rssRepository.fetchRss(uri)

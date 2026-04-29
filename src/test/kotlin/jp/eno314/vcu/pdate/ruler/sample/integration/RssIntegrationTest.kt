@@ -95,4 +95,45 @@ class RssIntegrationTest {
                 status { isBadRequest() }
             }
     }
+
+    @Test
+    fun `getRss returns 200 OK with valid atom_url`() {
+        val dummyAtomXml =
+            """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>サイトのタイトル</title>
+                <link rel="alternate" href="https://example.com"/>
+                <subtitle>サイトの概要説明</subtitle>
+                <entry>
+                    <id>https://example.com/article/123</id>
+                    <title>記事のタイトル</title>
+                    <link href="https://example.com/article/123"/>
+                    <summary><![CDATA[<p>ヘッドラインのテキストやHTML...</p>]]></summary>
+                    <published>2026-04-25T10:00:00Z</published>
+                    <author>
+                        <name>著者名</name>
+                    </author>
+                    <category term="テクノロジー"/>
+                    <category term="プログラミング"/>
+                </entry>
+            </feed>
+            """.trimIndent()
+
+        mockServer
+            .expect(requestTo("https://example.com/atom"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withSuccess(dummyAtomXml, MediaType.APPLICATION_XML))
+
+        mockMvc
+            .get("/api/rss") {
+                param("rssUrl", "https://example.com/atom")
+            }.andExpect {
+                status { isOk() }
+                jsonPath("$.site_info.title").value("サイトのタイトル")
+                jsonPath("$.items[0].title").value("記事のタイトル")
+            }
+
+        mockServer.verify()
+    }
 }
