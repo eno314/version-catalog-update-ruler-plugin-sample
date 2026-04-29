@@ -22,7 +22,7 @@ class RssIntegrationTest {
     fun `getRss returns 200 OK with valid rss_url`() {
         mockMvc
             .get("/api/rss") {
-                param("rss_url", "https://example.com/rss")
+                param("rssUrl", "https://example.com/rss")
             }.andExpect {
                 status { isOk() }
                 jsonPath("$.site_info.title").value("サイトのタイトル")
