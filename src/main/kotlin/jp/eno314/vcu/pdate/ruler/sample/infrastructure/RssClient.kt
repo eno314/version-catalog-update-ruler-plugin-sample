@@ -5,11 +5,12 @@ import org.springframework.web.client.RestClient
 
 @Component
 open class RssClient(
-    private val restClient: RestClient,
+    private val restClientBuilder: RestClient.Builder,
 ) {
     open fun fetch(request: RssFetchRemoteRequest): RssFetchRemoteResponse {
         val xml =
-            restClient
+            restClientBuilder
+                .build()
                 .get()
                 .uri(request.uri)
                 .retrieve()
