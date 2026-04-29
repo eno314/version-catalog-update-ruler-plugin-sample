@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 
 @Component
-open class RssClient(
+class RssClient(
     private val restClientBuilder: RestClient.Builder,
 ) {
-    open fun fetch(request: RssFetchRemoteRequest): RssFetchRemoteResponse {
+    fun fetch(request: RssFetchRemoteRequest): RssFetchRemoteResponse {
         val xml =
             restClientBuilder
                 .build()
