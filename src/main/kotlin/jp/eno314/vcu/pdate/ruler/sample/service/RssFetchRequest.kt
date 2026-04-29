@@ -7,6 +7,6 @@ import org.hibernate.validator.constraints.URL
 data class RssFetchRequest(
     @field:NotBlank
     @field:URL
-    @Schema(description = "The URL of the RSS feed to fetch", example = "https://example.com/rss", required = true)
+    @field:Schema(description = "The URL of the RSS feed to fetch", example = "https://example.com/rss", required = true)
     val rssUrl: String,
 )

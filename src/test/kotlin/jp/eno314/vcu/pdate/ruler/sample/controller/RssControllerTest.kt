@@ -2,7 +2,11 @@ package jp.eno314.vcu.pdate.ruler.sample.controller
 
 import io.mockk.every
 import io.mockk.mockk
-import jp.eno314.vcu.pdate.ruler.sample.service.*
+import jp.eno314.vcu.pdate.ruler.sample.service.RssFetchRequest
+import jp.eno314.vcu.pdate.ruler.sample.service.RssFetchResponse
+import jp.eno314.vcu.pdate.ruler.sample.service.RssItem
+import jp.eno314.vcu.pdate.ruler.sample.service.RssService
+import jp.eno314.vcu.pdate.ruler.sample.service.SiteInfo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime

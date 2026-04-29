@@ -2,7 +2,11 @@ package jp.eno314.vcu.pdate.ruler.sample.service
 
 import io.mockk.every
 import io.mockk.mockk
-import jp.eno314.vcu.pdate.ruler.sample.repository.*
+import jp.eno314.vcu.pdate.ruler.sample.repository.AtomFeedDto
+import jp.eno314.vcu.pdate.ruler.sample.repository.AtomFetchDto
+import jp.eno314.vcu.pdate.ruler.sample.repository.Rss20ChannelDto
+import jp.eno314.vcu.pdate.ruler.sample.repository.Rss20FetchDto
+import jp.eno314.vcu.pdate.ruler.sample.repository.RssRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.net.URI
