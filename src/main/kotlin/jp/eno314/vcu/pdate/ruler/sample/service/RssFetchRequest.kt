@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.BindParam
 data class RssFetchRequest(
     @field:NotBlank
     @field:URL
-    @BindParam("rss_url")
     @Schema(description = "The URL of the RSS feed to fetch", example = "https://example.com/rss", required = true)
-    val rssUrl: String?,
+    @Suppress("PropertyName")
+    val rss_url: String,
 )

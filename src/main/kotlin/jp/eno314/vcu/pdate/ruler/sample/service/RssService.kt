@@ -16,7 +16,7 @@ class RssService(
     fun fetchRss(
         @Valid request: RssFetchRequest,
     ): RssFetchResponse {
-        val rssUrlString = requireNotNull(request.rssUrl) { "rssUrl must not be null" }
+        val rssUrlString = requireNotNull(request.rss_url) { "rss_url must not be null" }
         val uri = URI.create(rssUrlString)
 
         return when (val dto = rssRepository.fetchRss(uri)) {

@@ -18,7 +18,7 @@ class RssServiceTest {
     @Test
     fun `fetchRss should map Rss20FetchDto to RssFetchResponse`() {
         // Arrange
-        val request = RssFetchRequest("https://example.com/rss")
+        val request = RssFetchRequest(rss_url = "https://example.com/rss")
         val uri = URI.create("https://example.com/rss")
         val dummyDto =
             Rss20FetchDto(
@@ -40,7 +40,7 @@ class RssServiceTest {
     @Test
     fun `fetchRss should map AtomFetchDto to RssFetchResponse`() {
         // Arrange
-        val request = RssFetchRequest("https://example.com/atom")
+        val request = RssFetchRequest(rss_url = "https://example.com/atom")
         val uri = URI.create("https://example.com/atom")
         val dummyDto =
             AtomFetchDto(

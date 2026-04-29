@@ -18,7 +18,7 @@ class RssControllerTest {
     @Test
     fun `getRss returns response from service`() {
         // Given
-        val request = RssFetchRequest(rssUrl = "https://example.com/rss")
+        val request = RssFetchRequest(rss_url = "https://example.com/rss")
         val expectedResponse =
             RssFetchResponse(
                 siteInfo =
