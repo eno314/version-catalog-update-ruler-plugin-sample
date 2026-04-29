@@ -79,14 +79,12 @@ class Rss20ParserTest {
             </rss>
             """.trimIndent()
 
-        // Act・Assert
-        val result = rss20Parser.parseRss20(rss20Xml)
-
-        // Assert
-        assertThat(result.channel.title).isEqualTo("サイトのタイトル")
-        assertThat(result.channel.link).isEqualTo("https://example.com")
-        assertThat(result.channel.description).isEqualTo("サイトの概要説明")
-        assertThat(result.items).hasSize(1) // Should have dummy item
+        // Act & Assert
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                rss20Parser.parseRss20(rss20Xml)
+            }
+        assertThat(exception.message).isEqualTo("Required element 'channel/title' is missing")
     }
 
     @Test

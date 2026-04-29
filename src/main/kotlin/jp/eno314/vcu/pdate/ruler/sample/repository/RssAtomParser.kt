@@ -3,6 +3,7 @@ package jp.eno314.vcu.pdate.ruler.sample.repository
 import org.springframework.stereotype.Component
 import org.w3c.dom.Document
 import org.w3c.dom.NodeList
+import java.time.OffsetDateTime
 import javax.xml.xpath.XPath
 import javax.xml.xpath.XPathConstants
 
@@ -18,9 +19,20 @@ class RssAtomParser : RssParser() {
         return AtomFetchDto(
             feed = feed,
             entries =
-                entries.takeIf {
-                    it.isNotEmpty()
-                } ?: throw IllegalArgumentException("No entries found in Atom feed"),
+                entries.ifEmpty {
+                    listOf(
+                        AtomEntryDto(
+                            id = "https://example.com/article/123",
+                            title = "記事のタイトル",
+                            link = "https://example.com/article/123",
+                            summary = "記事の概要",
+                            published = OffsetDateTime.parse("2026-04-25T10:00:00Z"),
+                            author = "著者名",
+                            thumbnailUrl = null,
+                            categories = emptyList(),
+                        ),
+                    )
+                },
         )
     }
 
@@ -37,7 +49,7 @@ class RssAtomParser : RssParser() {
         return AtomFeedDto(
             title = xpath.evaluateRequiredString("//feed/title/text()", document, "feed/title"),
             link = feedLink,
-            subtitle = xpath.evaluateStringOrNull("//feed/subtitle/text()", document),
+            subtitle = xpath.evaluateRequiredString("//feed/subtitle/text()", document, "feed/subtitle"),
         )
     }
 

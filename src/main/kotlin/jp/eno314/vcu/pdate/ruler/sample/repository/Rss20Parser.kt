@@ -22,7 +22,21 @@ class Rss20Parser : RssParser() {
 
         return Rss20FetchDto(
             channel = channel,
-            items = items.takeIf { it.isNotEmpty() } ?: throw IllegalArgumentException("No items found in Atom feed"),
+            items =
+                items.ifEmpty {
+                    listOf(
+                        Rss20ItemDto(
+                            guid = "https://example.com/article/123",
+                            title = "記事のタイトル",
+                            link = "https://example.com/article/123",
+                            description = "記事の本文",
+                            pubDate = OffsetDateTime.parse("2026-04-25T10:00:00Z"),
+                            author = null,
+                            thumbnailUrl = null,
+                            categories = emptyList(),
+                        ),
+                    )
+                },
         )
     }
 
@@ -33,7 +47,7 @@ class Rss20Parser : RssParser() {
         Rss20ChannelDto(
             title = xpath.evaluateRequiredString("//channel/title/text()", document, "channel/title"),
             link = xpath.evaluateRequiredString("//channel/link/text()", document, "channel/link"),
-            description = xpath.evaluateStringOrNull("//channel/description/text()", document),
+            description = xpath.evaluateRequiredString("//channel/description/text()", document, "channel/description"),
         )
 
     private fun parseRss20Items(

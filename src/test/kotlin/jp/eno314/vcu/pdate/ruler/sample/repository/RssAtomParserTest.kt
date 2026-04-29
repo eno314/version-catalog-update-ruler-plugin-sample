@@ -77,14 +77,12 @@ class RssAtomParserTest {
             </feed>
             """.trimIndent()
 
-        // Act
-        val result = rssAtomParser.parseAtom(atomXml)
-
-        // Assert
-        assertThat(result.feed.title).isEqualTo("サイトのタイトル")
-        assertThat(result.feed.link).isEqualTo("https://example.com")
-        assertThat(result.feed.subtitle).isEqualTo("サイトの概要説明")
-        assertThat(result.entries).hasSize(1) // Should have dummy entry
+        // Act & Assert
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                rssAtomParser.parseAtom(atomXml)
+            }
+        assertThat(exception.message).isEqualTo("Required element 'feed/link' is missing")
     }
 
     @Test
