@@ -36,7 +36,7 @@ class RssService(
                                 link = it.link,
                                 summaryHtml = it.description,
                                 publishedAt = it.pubDate,
-                                author = it.author ?: "",
+                                author = it.author,
                                 thumbnailUrl = it.thumbnailUrl,
                                 categories = it.categories,
                             )
