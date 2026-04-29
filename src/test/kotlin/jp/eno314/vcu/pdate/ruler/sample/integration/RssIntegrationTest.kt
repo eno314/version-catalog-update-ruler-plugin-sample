@@ -136,4 +136,44 @@ class RssIntegrationTest {
 
         mockServer.verify()
     }
+
+    @Test
+    fun `getRss returns 200 OK with valid namespaced rss_url`() {
+        val namespacedXml =
+            """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <rss xmlns:webfeeds="http://webfeeds.org/rss/1.0" xmlns:note="https://note.com" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0">
+                <channel>
+                    <title>Namespaced Channel</title>
+                    <link>https://namespaced.example.com</link>
+                    <description>Namespaced Channel Description</description>
+                    <item>
+                        <guid>https://namespaced.example.com/article/123</guid>
+                        <title>Namespaced Article</title>
+                        <link>https://namespaced.example.com/article/123</link>
+                        <description><![CDATA[<p>Namespaced content...</p>]]></description>
+                        <pubDate>2026-04-25T10:00:00Z</pubDate>
+                        <author>Namespaced Author</author>
+                        <category>Namespaced</category>
+                    </item>
+                </channel>
+            </rss>
+            """.trimIndent()
+
+        mockServer
+            .expect(requestTo("https://namespaced.example.com/rss"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withSuccess(namespacedXml, MediaType.APPLICATION_XML))
+
+        mockMvc
+            .get("/api/rss") {
+                param("rssUrl", "https://namespaced.example.com/rss")
+            }.andExpect {
+                status { isOk() }
+                jsonPath("$.site_info.title").value("Namespaced Channel")
+                jsonPath("$.items[0].title").value("Namespaced Article")
+            }
+
+        mockServer.verify()
+    }
 }

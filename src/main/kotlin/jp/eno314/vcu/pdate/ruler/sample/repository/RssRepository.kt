@@ -16,7 +16,7 @@ class RssRepository(
 
         return try {
             when {
-                remoteResponse.rawXml.contains("<rss version=\"2.0\">") -> rssParser.parseRss20(remoteResponse.rawXml)
+                remoteResponse.rawXml.contains(Regex("<rss[^>]*version=\"2.0\"")) -> rssParser.parseRss20(remoteResponse.rawXml)
                 remoteResponse.rawXml.contains("<feed") -> rssParser.parseAtom(remoteResponse.rawXml)
                 else -> throw IllegalArgumentException("Unsupported RSS format")
             }

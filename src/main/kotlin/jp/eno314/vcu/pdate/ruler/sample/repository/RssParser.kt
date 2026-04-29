@@ -14,7 +14,9 @@ import javax.xml.xpath.XPathFactory
 
 @Component
 class RssParser {
-    private val documentBuilderFactory = DocumentBuilderFactory.newInstance()
+    private val documentBuilderFactory = DocumentBuilderFactory.newInstance().apply {
+        isNamespaceAware = false  // Ignore namespaces for XPath compatibility
+    }
     private val xpathFactory = XPathFactory.newInstance()
 
     fun parseRss20(xmlString: String): Rss20FetchDto {
@@ -175,4 +177,3 @@ class RssParser {
         }
     }
 }
-

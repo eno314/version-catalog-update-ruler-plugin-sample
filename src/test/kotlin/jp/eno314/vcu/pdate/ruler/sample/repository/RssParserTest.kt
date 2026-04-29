@@ -351,5 +351,47 @@ class RssParserTest {
         // Assert
         assertThat(result.entries[0].published).isEqualTo(OffsetDateTime.parse("2026-04-25T10:00:00Z"))
     }
-}
 
+    @Test
+    fun `parseRss20 should handle namespaced RSS 2_0 XML correctly`() {
+        // Arrange
+        val namespacedRss20Xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <rss xmlns:webfeeds="http://webfeeds.org/rss/1.0" xmlns:note="https://note.com" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0">
+                <channel>
+                    <title>Namespaced Channel</title>
+                    <link>https://namespaced.example.com</link>
+                    <description>Namespaced Channel Description</description>
+                    <item>
+                        <guid>https://namespaced.example.com/article/1</guid>
+                        <title>Namespaced Article 1</title>
+                        <link>https://namespaced.example.com/article/1</link>
+                        <description>Namespaced Article 1 Description</description>
+                        <pubDate>Sat, 25 Apr 2026 10:00:00 +0000</pubDate>
+                        <author>Namespaced Author</author>
+                        <category>Namespaced</category>
+                        <category>Article</category>
+                    </item>
+                </channel>
+            </rss>
+        """.trimIndent()
+
+        // Act
+        val result = rssParser.parseRss20(namespacedRss20Xml)
+
+        // Assert
+        assertThat(result).isInstanceOf(Rss20FetchDto::class.java)
+        assertThat(result.channel.title).isEqualTo("Namespaced Channel")
+        assertThat(result.channel.link).isEqualTo("https://namespaced.example.com")
+        assertThat(result.channel.description).isEqualTo("Namespaced Channel Description")
+        assertThat(result.items).hasSize(1)
+
+        // First item assertions
+        assertThat(result.items[0].guid).isEqualTo("https://namespaced.example.com/article/1")
+        assertThat(result.items[0].title).isEqualTo("Namespaced Article 1")
+        assertThat(result.items[0].link).isEqualTo("https://namespaced.example.com/article/1")
+        assertThat(result.items[0].description).isEqualTo("Namespaced Article 1 Description")
+        assertThat(result.items[0].author).isEqualTo("Namespaced Author")
+        assertThat(result.items[0].categories).containsExactly("Namespaced", "Article")
+    }
+}
