@@ -13,16 +13,17 @@ updates in a Gradle Version Catalog (`gradle/libs.versions.toml`).
 
 | Item           | Value                                            |
 |----------------|--------------------------------------------------|
-| Language       | Kotlin (JVM, toolchain Java 21)                  |
-| Framework      | Spring Boot 3 (Web starter)                      |
+| Language       | Kotlin (JVM, toolchain Java 25)                  |
+| Framework      | Spring Boot 4 (Web starter)                      |
 | Build Tool     | Gradle (Kotlin DSL)                              |
 | Plugin Focus   | `io.github.eno314.version-catalog-update-ruler`  |
 | Quality / Lint | detekt, ktlint                                   |
 | Tests          | JUnit 5 (Kotlin test + Spring Boot starter test) |
 | Coverage       | JaCoCo report generation                         |
 
-The application itself is intentionally tiny (a single `@SpringBootApplication` class) so the focus stays on dependency
-governance via the Version Catalog Update Ruler plugin.
+The application is a Spring Boot project that provides a REST API to fetch and parse RSS 2.0 and Atom feeds. It follows a layered architecture (Controller, Service, Repository, Infrastructure) and demonstrates how to integrate the Version Catalog Update Ruler plugin into a functional codebase.
+
+Swagger UI is available at `/swagger-ui.html` for API exploration.
 
 ## Version Catalog Update Ruler Plugin Configuration
 
@@ -34,6 +35,13 @@ versionCatalogUpdateRuler {
     pinMajorVersion.set(true)
     pinMinorVersion.set(true)
     onlyArtifactVersion.set(true)
+
+    library("io.mockk:mockk") {
+        onlyStable.set(true)
+        pinMajorVersion.set(true)
+        pinMinorVersion.set(false)
+        onlyArtifactVersion.set(true)
+    }
 }
 ```
 
@@ -47,7 +55,8 @@ Meaning:
   unintentionally).
 
 Together these settings enforce conservative, safe upgrades (patch-level for existing artifacts, stable releases only)
-while still keeping visibility over available changes.
+while still keeping visibility over available changes. The `mockk` override demonstrates how to allow minor version 
+upgrades for specific dependencies while maintaining a stricter policy globally.
 
 Run the `./gradlew versionCatalogUpdate` task to see how the plugin filters and suggests updates based on these rules.
 
