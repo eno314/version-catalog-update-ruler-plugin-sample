@@ -14,7 +14,7 @@ updates in a Gradle Version Catalog (`gradle/libs.versions.toml`).
 | Item           | Value                                            |
 |----------------|--------------------------------------------------|
 | Language       | Kotlin (JVM, toolchain Java 25)                  |
-| Framework      | Spring Boot 3 (Web starter)                      |
+| Framework      | Spring Boot 4 (Web starter)                      |
 | Build Tool     | Gradle (Kotlin DSL)                              |
 | Plugin Focus   | `io.github.eno314.version-catalog-update-ruler`  |
 | Quality / Lint | detekt, ktlint                                   |
