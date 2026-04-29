@@ -47,7 +47,7 @@ class Rss20Parser : RssParser() {
         Rss20ChannelDto(
             title = xpath.evaluateRequiredString("//channel/title/text()", document, "channel/title"),
             link = xpath.evaluateRequiredString("//channel/link/text()", document, "channel/link"),
-            description = xpath.evaluateRequiredString("//channel/description/text()", document, "channel/description"),
+            description = xpath.evaluateStringOrNull("//channel/description/text()", document),
         )
 
     private fun parseRss20Items(
@@ -61,10 +61,10 @@ class Rss20Parser : RssParser() {
             val itemNode = itemNodes.item(i)
             val itemXpath = xpathFactory.newXPath()
 
-            val guid = itemXpath.evaluateStringOrNull("guid/text()", itemNode)
-            val title = itemXpath.evaluateStringOrNull("title/text()", itemNode)
-            val link = itemXpath.evaluateStringOrNull("link/text()", itemNode)
-            val description = itemXpath.evaluateStringOrNull("description/text()", itemNode)
+            val guid = itemXpath.evaluateRequiredString("guid/text()", itemNode, "item/guid")
+            val title = itemXpath.evaluateRequiredString("title/text()", itemNode, "item/title")
+            val link = itemXpath.evaluateRequiredString("link/text()", itemNode, "item/link")
+            val description = itemXpath.evaluateRequiredString("description/text()", itemNode, "item/description")
             val pubDateStr = itemXpath.evaluateStringOrNull("pubDate/text()", itemNode) ?: ""
             val author = itemXpath.evaluateStringOrNull("author/text()", itemNode)
             val thumbnailUrl = itemXpath.evaluateStringOrNull("media:thumbnail/@url", itemNode)
@@ -78,10 +78,10 @@ class Rss20Parser : RssParser() {
 
             items.add(
                 Rss20ItemDto(
-                    guid = guid ?: "https://example.com/article/default",
-                    title = title ?: "記事のタイトル",
-                    link = link ?: "https://example.com/article/default",
-                    description = description ?: "<p>ヘッドラインのテキストやHTML...</p>",
+                    guid = guid,
+                    title = title,
+                    link = link,
+                    description = description,
                     pubDate = pubDate,
                     author = author,
                     thumbnailUrl = thumbnailUrl,

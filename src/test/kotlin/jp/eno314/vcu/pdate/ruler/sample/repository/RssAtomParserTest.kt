@@ -65,24 +65,24 @@ class RssAtomParserTest {
     }
 
     @Test
-    fun `parseAtom should use default values for empty elements`() {
+    fun `parseAtom should allow empty optional elements`() {
         // Arrange
         val atomXml =
             """
             <?xml version="1.0" encoding="UTF-8"?>
             <feed xmlns="http://www.w3.org/2005/Atom">
-                <title></title>
-                <link/>
+                <title>Test Title</title>
+                <link href="https://test.example.com"/>
                 <subtitle></subtitle>
             </feed>
             """.trimIndent()
 
-        // Act & Assert
-        val exception =
-            assertThrows<IllegalArgumentException> {
-                rssAtomParser.parseAtom(atomXml)
-            }
-        assertThat(exception.message).isEqualTo("Required element 'feed/link' is missing")
+        // Act
+        val result = rssAtomParser.parseAtom(atomXml)
+
+        // Assert
+        assertThat(result.feed.title).isEqualTo("Test Title")
+        assertThat(result.feed.subtitle).isNull()
     }
 
     @Test
@@ -206,7 +206,7 @@ class RssAtomParserTest {
     }
 
     @Test
-    fun `parseAtom should throw exception for missing required feed subtitle`() {
+    fun `parseAtom should throw exception for missing required entry title`() {
         // Arrange
         val atomXml =
             """
@@ -214,7 +214,12 @@ class RssAtomParserTest {
             <feed xmlns="http://www.w3.org/2005/Atom">
                 <title>Test Feed</title>
                 <link href="https://test.example.com"/>
-                <subtitle></subtitle>
+                <subtitle>Test</subtitle>
+                <entry>
+                    <id>test-1</id>
+                    <link href="https://test.example.com/1"/>
+                    <summary>Test</summary>
+                </entry>
             </feed>
             """.trimIndent()
 
@@ -223,6 +228,6 @@ class RssAtomParserTest {
             assertThrows<IllegalArgumentException> {
                 rssAtomParser.parseAtom(atomXml)
             }
-        assertThat(exception.message).isEqualTo("Required element 'feed/subtitle' is missing")
+        assertThat(exception.message).isEqualTo("Required element 'entry/title' is missing")
     }
 }

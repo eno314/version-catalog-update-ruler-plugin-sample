@@ -65,26 +65,26 @@ class Rss20ParserTest {
     }
 
     @Test
-    fun `parseRss20 should use default values for empty elements`() {
+    fun `parseRss20 should allow empty optional elements`() {
         // Arrange
         val rss20Xml =
             """
             <?xml version="1.0" encoding="UTF-8"?>
             <rss version="2.0">
                 <channel>
-                    <title></title>
-                    <link></link>
+                    <title>Test Title</title>
+                    <link>https://test.example.com</link>
                     <description></description>
                 </channel>
             </rss>
             """.trimIndent()
 
-        // Act & Assert
-        val exception =
-            assertThrows<IllegalArgumentException> {
-                rss20Parser.parseRss20(rss20Xml)
-            }
-        assertThat(exception.message).isEqualTo("Required element 'channel/title' is missing")
+        // Act
+        val result = rss20Parser.parseRss20(rss20Xml)
+
+        // Assert
+        assertThat(result.channel.title).isEqualTo("Test Title")
+        assertThat(result.channel.description).isNull()
     }
 
     @Test
@@ -295,7 +295,7 @@ class Rss20ParserTest {
     }
 
     @Test
-    fun `parseRss20 should throw exception for missing required channel description`() {
+    fun `parseRss20 should throw exception for missing required item title`() {
         // Arrange
         val rss20Xml =
             """
@@ -304,7 +304,11 @@ class Rss20ParserTest {
                 <channel>
                     <title>Test Channel</title>
                     <link>https://test.example.com</link>
-                    <description></description>
+                    <item>
+                        <guid>test-1</guid>
+                        <link>https://test.example.com/1</link>
+                        <description>Test</description>
+                    </item>
                 </channel>
             </rss>
             """.trimIndent()
@@ -314,6 +318,6 @@ class Rss20ParserTest {
             assertThrows<IllegalArgumentException> {
                 rss20Parser.parseRss20(rss20Xml)
             }
-        assertThat(exception.message).isEqualTo("Required element 'channel/description' is missing")
+        assertThat(exception.message).isEqualTo("Required element 'item/title' is missing")
     }
 }

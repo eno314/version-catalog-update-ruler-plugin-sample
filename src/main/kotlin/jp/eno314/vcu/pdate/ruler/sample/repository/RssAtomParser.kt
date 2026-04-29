@@ -49,7 +49,7 @@ class RssAtomParser : RssParser() {
         return AtomFeedDto(
             title = xpath.evaluateRequiredString("//feed/title/text()", document, "feed/title"),
             link = feedLink,
-            subtitle = xpath.evaluateRequiredString("//feed/subtitle/text()", document, "feed/subtitle"),
+            subtitle = xpath.evaluateStringOrNull("//feed/subtitle/text()", document),
         )
     }
 
@@ -64,10 +64,10 @@ class RssAtomParser : RssParser() {
             val entryNode = entryNodes.item(i)
             val entryXpath = xpathFactory.newXPath()
 
-            val id = entryXpath.evaluateStringOrNull("id/text()", entryNode)
-            val title = entryXpath.evaluateStringOrNull("title/text()", entryNode)
-            val link = entryXpath.evaluateStringOrNull("link/@href", entryNode)
-            val summary = entryXpath.evaluateStringOrNull("summary/text()", entryNode)
+            val id = entryXpath.evaluateRequiredString("id/text()", entryNode, "entry/id")
+            val title = entryXpath.evaluateRequiredString("title/text()", entryNode, "entry/title")
+            val link = entryXpath.evaluateRequiredString("link/@href", entryNode, "entry/link")
+            val summary = entryXpath.evaluateRequiredString("summary/text()", entryNode, "entry/summary")
             val publishedStr = entryXpath.evaluateStringOrNull("published/text()", entryNode) ?: ""
             val author = entryXpath.evaluateStringOrNull("author/name/text()", entryNode) ?: "著者名"
             val thumbnailUrl = entryXpath.evaluateStringOrNull("media:thumbnail/@url", entryNode)
@@ -81,10 +81,10 @@ class RssAtomParser : RssParser() {
 
             entries.add(
                 AtomEntryDto(
-                    id = id ?: "https://example.com/article/default",
-                    title = title ?: "記事のタイトル",
-                    link = link ?: "https://example.com/article/default",
-                    summary = summary ?: "<p>ヘッドラインのテキストやHTML...</p>",
+                    id = id,
+                    title = title,
+                    link = link,
+                    summary = summary,
                     published = published,
                     author = author,
                     thumbnailUrl = thumbnailUrl,
