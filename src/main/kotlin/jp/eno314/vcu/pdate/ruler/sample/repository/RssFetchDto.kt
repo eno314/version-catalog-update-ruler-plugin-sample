@@ -12,7 +12,7 @@ data class Rss20FetchDto(
 data class Rss20ChannelDto(
     val title: String,
     val link: String,
-    val description: String,
+    val description: String?,
 )
 
 data class Rss20ItemDto(
@@ -34,7 +34,7 @@ data class AtomFetchDto(
 data class AtomFeedDto(
     val title: String,
     val link: String,
-    val subtitle: String,
+    val subtitle: String?,
 )
 
 data class AtomEntryDto(

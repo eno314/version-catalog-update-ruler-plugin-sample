@@ -8,7 +8,8 @@ import java.net.URI
 @Repository
 class RssRepository(
     private val rssClient: RssClient,
-    private val rssParser: RssParser,
+    private val rss20Parser: Rss20Parser,
+    private val rssAtomParser: RssAtomParser,
 ) {
     fun fetchRss(uri: URI): RssFetchDto {
         val remoteRequest = RssFetchRemoteRequest(uri = uri)
@@ -19,10 +20,10 @@ class RssRepository(
     private fun parseRssSafely(xmlString: String): RssFetchDto =
         when {
             xmlString.contains(Regex("<rss[^>]*version=\"2.0\"")) ->
-                rssParser.parseRss20(xmlString)
+                rss20Parser.parseRss20(xmlString)
 
             xmlString.contains("<feed") ->
-                rssParser.parseAtom(xmlString)
+                rssAtomParser.parseAtom(xmlString)
 
             else -> throw IllegalArgumentException("Unsupported RSS format")
         }

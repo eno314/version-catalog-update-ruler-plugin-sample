@@ -18,7 +18,7 @@ data class SiteInfo(
     @Schema(description = "Link to the site", example = "https://example.com")
     val link: String,
     @Schema(description = "Description of the site", example = "An example site for RSS")
-    val description: String,
+    val description: String?,
 )
 
 data class RssItem(

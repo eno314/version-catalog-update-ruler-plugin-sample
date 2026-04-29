@@ -12,8 +12,9 @@ import java.net.URI
 
 class RssRepositoryTest {
     private val rssClient = mockk<RssClient>()
-    private val rssParser = mockk<RssParser>()
-    private val rssRepository = RssRepository(rssClient, rssParser)
+    private val rss20Parser = mockk<Rss20Parser>()
+    private val rssAtomParser = mockk<RssAtomParser>()
+    private val rssRepository = RssRepository(rssClient, rss20Parser, rssAtomParser)
 
     @Test
     fun `fetchRss should return Rss20FetchDto for RSS 2_0 format`() {
@@ -31,7 +32,7 @@ class RssRepositoryTest {
                 items = emptyList(),
             )
         every { rssClient.fetch(RssFetchRemoteRequest(uri)) } returns RssFetchRemoteResponse(dummyXml)
-        every { rssParser.parseRss20(dummyXml) } returns expectedDto
+        every { rss20Parser.parseRss20(dummyXml) } returns expectedDto
 
         // Act
         val dto = rssRepository.fetchRss(uri)
@@ -58,7 +59,7 @@ class RssRepositoryTest {
                 entries = emptyList(),
             )
         every { rssClient.fetch(RssFetchRemoteRequest(uri)) } returns RssFetchRemoteResponse(dummyXml)
-        every { rssParser.parseAtom(dummyXml) } returns expectedDto
+        every { rssAtomParser.parseAtom(dummyXml) } returns expectedDto
 
         // Act
         val dto = rssRepository.fetchRss(uri)
@@ -108,7 +109,7 @@ class RssRepositoryTest {
                 items = emptyList(),
             )
         every { rssClient.fetch(RssFetchRemoteRequest(uri)) } returns RssFetchRemoteResponse(namespacedXml)
-        every { rssParser.parseRss20(namespacedXml) } returns expectedDto
+        every { rss20Parser.parseRss20(namespacedXml) } returns expectedDto
 
         // Act
         val dto = rssRepository.fetchRss(uri)
