@@ -10,7 +10,8 @@ class RssParserTest {
     @Test
     fun `parseRss20 should parse valid RSS 2_0 XML correctly`() {
         // Arrange
-        val rss20Xml = """
+        val rss20Xml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <rss version="2.0">
                 <channel>
@@ -36,7 +37,7 @@ class RssParserTest {
                     </item>
                 </channel>
             </rss>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseRss20(rss20Xml)
@@ -65,7 +66,8 @@ class RssParserTest {
     @Test
     fun `parseRss20 should use default values for empty elements`() {
         // Arrange
-        val rss20Xml = """
+        val rss20Xml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <rss version="2.0">
                 <channel>
@@ -74,7 +76,7 @@ class RssParserTest {
                     <description></description>
                 </channel>
             </rss>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseRss20(rss20Xml)
@@ -89,7 +91,8 @@ class RssParserTest {
     @Test
     fun `parseRss20 should provide dummy item when no items exist`() {
         // Arrange
-        val rss20Xml = """
+        val rss20Xml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <rss version="2.0">
                 <channel>
@@ -98,7 +101,7 @@ class RssParserTest {
                     <description>Test Channel Description</description>
                 </channel>
             </rss>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseRss20(rss20Xml)
@@ -112,7 +115,8 @@ class RssParserTest {
     @Test
     fun `parseAtom should parse valid Atom XML correctly`() {
         // Arrange
-        val atomXml = """
+        val atomXml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <feed xmlns="http://www.w3.org/2005/Atom">
                 <title>Test Feed</title>
@@ -138,7 +142,7 @@ class RssParserTest {
                     <published>2026-04-26T10:00:00Z</published>
                 </entry>
             </feed>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseAtom(atomXml)
@@ -167,14 +171,15 @@ class RssParserTest {
     @Test
     fun `parseAtom should use default values for empty elements`() {
         // Arrange
-        val atomXml = """
+        val atomXml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <feed xmlns="http://www.w3.org/2005/Atom">
                 <title></title>
                 <link/>
                 <subtitle></subtitle>
             </feed>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseAtom(atomXml)
@@ -189,14 +194,15 @@ class RssParserTest {
     @Test
     fun `parseAtom should provide dummy entry when no entries exist`() {
         // Arrange
-        val atomXml = """
+        val atomXml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <feed xmlns="http://www.w3.org/2005/Atom">
                 <title>Test Feed</title>
                 <link href="https://test.example.com"/>
                 <subtitle>Test Feed Description</subtitle>
             </feed>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseAtom(atomXml)
@@ -210,7 +216,8 @@ class RssParserTest {
     @Test
     fun `parseRss20 should handle RFC 2822 date format`() {
         // Arrange
-        val rss20Xml = """
+        val rss20Xml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <rss version="2.0">
                 <channel>
@@ -226,7 +233,7 @@ class RssParserTest {
                     </item>
                 </channel>
             </rss>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseRss20(rss20Xml)
@@ -241,7 +248,8 @@ class RssParserTest {
     @Test
     fun `parseRss20 should handle ISO 8601 date format fallback`() {
         // Arrange
-        val rss20Xml = """
+        val rss20Xml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <rss version="2.0">
                 <channel>
@@ -257,7 +265,7 @@ class RssParserTest {
                     </item>
                 </channel>
             </rss>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseRss20(rss20Xml)
@@ -272,7 +280,8 @@ class RssParserTest {
     @Test
     fun `parseRss20 should handle invalid date with default fallback`() {
         // Arrange
-        val rss20Xml = """
+        val rss20Xml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <rss version="2.0">
                 <channel>
@@ -288,7 +297,7 @@ class RssParserTest {
                     </item>
                 </channel>
             </rss>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseRss20(rss20Xml)
@@ -300,7 +309,8 @@ class RssParserTest {
     @Test
     fun `parseAtom should handle ISO 8601 date format`() {
         // Arrange
-        val atomXml = """
+        val atomXml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <feed xmlns="http://www.w3.org/2005/Atom">
                 <title>Test Feed</title>
@@ -314,7 +324,7 @@ class RssParserTest {
                     <published>2026-04-25T10:00:00Z</published>
                 </entry>
             </feed>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseAtom(atomXml)
@@ -329,7 +339,8 @@ class RssParserTest {
     @Test
     fun `parseAtom should handle invalid date with default fallback`() {
         // Arrange
-        val atomXml = """
+        val atomXml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <feed xmlns="http://www.w3.org/2005/Atom">
                 <title>Test Feed</title>
@@ -343,7 +354,7 @@ class RssParserTest {
                     <published>invalid-date</published>
                 </entry>
             </feed>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseAtom(atomXml)
@@ -355,7 +366,8 @@ class RssParserTest {
     @Test
     fun `parseRss20 should handle namespaced RSS 2_0 XML correctly`() {
         // Arrange
-        val namespacedRss20Xml = """
+        val namespacedRss20Xml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <rss xmlns:webfeeds="http://webfeeds.org/rss/1.0" xmlns:note="https://note.com" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0">
                 <channel>
@@ -374,7 +386,7 @@ class RssParserTest {
                     </item>
                 </channel>
             </rss>
-        """.trimIndent()
+            """.trimIndent()
 
         // Act
         val result = rssParser.parseRss20(namespacedRss20Xml)

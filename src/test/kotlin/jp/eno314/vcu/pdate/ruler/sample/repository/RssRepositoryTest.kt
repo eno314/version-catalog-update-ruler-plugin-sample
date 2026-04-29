@@ -20,10 +20,16 @@ class RssRepositoryTest {
         // Arrange
         val uri = URI.create("https://example.com/rss")
         val dummyXml = """<rss version="2.0"></rss>"""
-        val expectedDto = Rss20FetchDto(
-            channel = Rss20ChannelDto(title = "サイトのタイトル", link = "https://example.com", description = "サイトの概要説明"),
-            items = emptyList(),
-        )
+        val expectedDto =
+            Rss20FetchDto(
+                channel =
+                    Rss20ChannelDto(
+                        title = "サイトのタイトル",
+                        link = "https://example.com",
+                        description = "サイトの概要説明",
+                    ),
+                items = emptyList(),
+            )
         every { rssClient.fetch(RssFetchRemoteRequest(uri)) } returns RssFetchRemoteResponse(dummyXml)
         every { rssParser.parseRss20(dummyXml) } returns expectedDto
 
@@ -41,10 +47,16 @@ class RssRepositoryTest {
         // Arrange
         val uri = URI.create("https://example.com/atom")
         val dummyXml = """<feed></feed>"""
-        val expectedDto = AtomFetchDto(
-            feed = AtomFeedDto(title = "サイトのタイトル", link = "https://example.com", subtitle = "サイトの概要説明"),
-            entries = emptyList(),
-        )
+        val expectedDto =
+            AtomFetchDto(
+                feed =
+                    AtomFeedDto(
+                        title = "サイトのタイトル",
+                        link = "https://example.com",
+                        subtitle = "サイトの概要説明",
+                    ),
+                entries = emptyList(),
+            )
         every { rssClient.fetch(RssFetchRemoteRequest(uri)) } returns RssFetchRemoteResponse(dummyXml)
         every { rssParser.parseAtom(dummyXml) } returns expectedDto
 
@@ -76,11 +88,25 @@ class RssRepositoryTest {
     fun `fetchRss should return Rss20FetchDto for namespaced RSS 2_0 format`() {
         // Arrange
         val uri = URI.create("https://example.com/namespaced-rss")
-        val namespacedXml = """<rss xmlns:webfeeds="http://webfeeds.org/rss/1.0" xmlns:note="https://note.com" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>Namespaced</title></channel></rss>"""
-        val expectedDto = Rss20FetchDto(
-            channel = Rss20ChannelDto(title = "Namespaced", link = "https://example.com", description = "サイトの概要説明"),
-            items = emptyList(),
-        )
+        val namespacedXml =
+            """
+<rss xmlns:webfeeds="http://webfeeds.org/rss/1.0"
+     xmlns:note="https://note.com"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:media="http://search.yahoo.com/mrss/" version="2.0">
+     <channel><title>Namespaced</title></channel>
+</rss>
+            """.trimIndent()
+        val expectedDto =
+            Rss20FetchDto(
+                channel =
+                    Rss20ChannelDto(
+                        title = "Namespaced",
+                        link = "https://example.com",
+                        description = "サイトの概要説明",
+                    ),
+                items = emptyList(),
+            )
         every { rssClient.fetch(RssFetchRemoteRequest(uri)) } returns RssFetchRemoteResponse(namespacedXml)
         every { rssParser.parseRss20(namespacedXml) } returns expectedDto
 
