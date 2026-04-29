@@ -4,9 +4,11 @@ import org.springframework.stereotype.Component
 
 @Component
 class RssClient {
+    @Suppress("UnusedParameter")
     fun fetch(request: RssFetchRemoteRequest): RssFetchRemoteResponse {
         // ダミーのXML文字列を返す実装
-        val dummyXml = """
+        val dummyXml =
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <rss version="2.0">
                 <channel>
@@ -25,8 +27,8 @@ class RssClient {
                     </item>
                 </channel>
             </rss>
-        """.trimIndent()
-        
+            """.trimIndent()
+
         return RssFetchRemoteResponse(rawXml = dummyXml)
     }
 }

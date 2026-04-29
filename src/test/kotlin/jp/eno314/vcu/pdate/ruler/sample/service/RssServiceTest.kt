@@ -2,7 +2,6 @@ package jp.eno314.vcu.pdate.ruler.sample.service
 
 import io.mockk.every
 import io.mockk.mockk
-import jp.eno314.vcu.pdate.ruler.sample.repository.AtomEntryDto
 import jp.eno314.vcu.pdate.ruler.sample.repository.AtomFeedDto
 import jp.eno314.vcu.pdate.ruler.sample.repository.AtomFetchDto
 import jp.eno314.vcu.pdate.ruler.sample.repository.Rss20ChannelDto
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test
 import java.net.URI
 
 class RssServiceTest {
-
     private val rssRepository = mockk<RssRepository>()
     private val rssService = RssService(rssRepository)
 
@@ -22,10 +20,11 @@ class RssServiceTest {
         // Arrange
         val request = RssFetchRequest("https://example.com/rss")
         val uri = URI.create("https://example.com/rss")
-        val dummyDto = Rss20FetchDto(
-            channel = Rss20ChannelDto("RSS Title", "https://rss.link", "RSS Desc"),
-            items = emptyList()
-        )
+        val dummyDto =
+            Rss20FetchDto(
+                channel = Rss20ChannelDto("RSS Title", "https://rss.link", "RSS Desc"),
+                items = emptyList(),
+            )
         every { rssRepository.fetchRss(uri) } returns dummyDto
 
         // Act
@@ -43,10 +42,11 @@ class RssServiceTest {
         // Arrange
         val request = RssFetchRequest("https://example.com/atom")
         val uri = URI.create("https://example.com/atom")
-        val dummyDto = AtomFetchDto(
-            feed = AtomFeedDto("Atom Title", "https://atom.link", "Atom Desc"),
-            entries = emptyList()
-        )
+        val dummyDto =
+            AtomFetchDto(
+                feed = AtomFeedDto("Atom Title", "https://atom.link", "Atom Desc"),
+                entries = emptyList(),
+            )
         every { rssRepository.fetchRss(uri) } returns dummyDto
 
         // Act

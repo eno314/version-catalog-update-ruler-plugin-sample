@@ -11,7 +11,6 @@ import org.junit.jupiter.api.assertThrows
 import java.net.URI
 
 class RssRepositoryTest {
-
     private val rssClient = mockk<RssClient>()
     private val rssRepository = RssRepository(rssClient)
 
@@ -55,9 +54,10 @@ class RssRepositoryTest {
         every { rssClient.fetch(RssFetchRemoteRequest(uri)) } returns RssFetchRemoteResponse(dummyXml)
 
         // Act & Assert
-        val exception = assertThrows<IllegalArgumentException> {
-            rssRepository.fetchRss(uri)
-        }
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                rssRepository.fetchRss(uri)
+            }
         assertThat(exception.message).isEqualTo("Unsupported RSS format")
     }
 }
