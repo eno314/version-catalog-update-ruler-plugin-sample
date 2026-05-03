@@ -61,25 +61,11 @@ detekt {
 versionCatalogUpdateRuler {
     onlyStable.set(true)
     pinMajorVersion.set(true)
-    pinMinorVersion.set(true)
+    pinMinorVersion.set(false)
     onlyArtifactVersion.set(true)
 
     library("dev.detekt:dev.detekt.gradle.plugin") {
         onlyStable.set(false)
-        pinMajorVersion.set(true)
-        pinMinorVersion.set(false)
-        onlyArtifactVersion.set(true)
-    }
-
-    library("org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin") {
-        onlyStable.set(true)
-        pinMajorVersion.set(true)
-        pinMinorVersion.set(false)
-        onlyArtifactVersion.set(true)
-    }
-
-    library("io.mockk:mockk") {
-        onlyStable.set(true)
         pinMajorVersion.set(true)
         pinMinorVersion.set(false)
         onlyArtifactVersion.set(true)
