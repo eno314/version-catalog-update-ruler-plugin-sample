@@ -15,7 +15,7 @@ import org.springframework.web.client.RestClient
 class RestClientConfig {
     private val connectTimeout = Timeout.ofMilliseconds(500)
     private val connectionRequestTimeout = Timeout.ofMilliseconds(500)
-    private val responseTimeout = Timeout.ofMilliseconds(1000)
+    private val responseTimeout = Timeout.ofMilliseconds(10000)
 
     private val maxConnTotal = 75
     private val maxConnPerRoute = 20
