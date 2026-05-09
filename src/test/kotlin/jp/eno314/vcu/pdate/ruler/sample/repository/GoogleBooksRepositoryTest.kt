@@ -17,12 +17,12 @@ class GoogleBooksRepositoryTest {
     private val googleBooksRepository = GoogleBooksRepository(googleBooksClient)
 
     @Test
-    fun `searchByTitle should pass intitle query and googleApiKey to client`() {
+    fun `search should pass intitle query and googleApiKey to client`() {
         val requestSlot = slot<GoogleBooksSearchRemoteRequest>()
         every { googleBooksClient.search(capture(requestSlot)) } returns
             GoogleBooksSearchRemoteResponse(kind = null, totalItems = 0, items = emptyList())
 
-        googleBooksRepository.searchByTitle(
+        googleBooksRepository.search(
             title = "Clean Code",
             googleApiKey = "test-key",
             author = null,
@@ -39,12 +39,12 @@ class GoogleBooksRepositoryTest {
     }
 
     @Test
-    fun `searchByTitle should pass null googleApiKey to client when not specified`() {
+    fun `search should pass null googleApiKey to client when not specified`() {
         val requestSlot = slot<GoogleBooksSearchRemoteRequest>()
         every { googleBooksClient.search(capture(requestSlot)) } returns
             GoogleBooksSearchRemoteResponse(kind = null, totalItems = 0, items = emptyList())
 
-        googleBooksRepository.searchByTitle(
+        googleBooksRepository.search(
             title = "Clean Code",
             googleApiKey = null,
             author = null,
@@ -58,12 +58,12 @@ class GoogleBooksRepositoryTest {
     }
 
     @Test
-    fun `searchByTitle should build complex query and pass parameters to client`() {
+    fun `search should build complex query and pass parameters to client`() {
         val requestSlot = slot<GoogleBooksSearchRemoteRequest>()
         every { googleBooksClient.search(capture(requestSlot)) } returns
             GoogleBooksSearchRemoteResponse(kind = null, totalItems = 0, items = emptyList())
 
-        googleBooksRepository.searchByTitle(
+        googleBooksRepository.search(
             title = "Clean Code",
             googleApiKey = "test-key",
             author = "Robert C. Martin",
@@ -80,7 +80,7 @@ class GoogleBooksRepositoryTest {
     }
 
     @Test
-    fun `searchByTitle should map remote response to dto correctly`() {
+    fun `search should map remote response to dto correctly`() {
         val remoteResponse =
             GoogleBooksSearchRemoteResponse(
                 kind = "books#volumes",
@@ -109,7 +109,7 @@ class GoogleBooksRepositoryTest {
         every { googleBooksClient.search(any()) } returns remoteResponse
 
         val result =
-            googleBooksRepository.searchByTitle(
+            googleBooksRepository.search(
                 title = "Clean Code",
                 googleApiKey = "test-key",
                 author = null,
@@ -134,12 +134,12 @@ class GoogleBooksRepositoryTest {
     }
 
     @Test
-    fun `searchByTitle should return empty books when items is null`() {
+    fun `search should return empty books when items is null`() {
         every { googleBooksClient.search(any()) } returns
             GoogleBooksSearchRemoteResponse(kind = null, totalItems = 0, items = null)
 
         val result =
-            googleBooksRepository.searchByTitle(
+            googleBooksRepository.search(
                 title = "Unknown",
                 googleApiKey = "test-key",
                 author = null,
@@ -154,7 +154,7 @@ class GoogleBooksRepositoryTest {
     }
 
     @Test
-    fun `searchByTitle should use empty list for null authors`() {
+    fun `search should use empty list for null authors`() {
         val remoteResponse =
             GoogleBooksSearchRemoteResponse(
                 kind = null,
@@ -179,7 +179,7 @@ class GoogleBooksRepositoryTest {
         every { googleBooksClient.search(any()) } returns remoteResponse
 
         val result =
-            googleBooksRepository.searchByTitle(
+            googleBooksRepository.search(
                 title = "Some Book",
                 googleApiKey = "test-key",
                 author = null,

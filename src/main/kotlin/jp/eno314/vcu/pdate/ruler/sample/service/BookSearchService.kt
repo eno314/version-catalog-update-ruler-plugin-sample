@@ -14,7 +14,7 @@ class BookSearchService(
         @Valid request: BookSearchRequest,
     ): BookSearchResponse {
         val dto =
-            googleBooksRepository.searchByTitle(
+            googleBooksRepository.search(
                 title = request.title,
                 googleApiKey = request.googleApiKey,
                 author = request.author,

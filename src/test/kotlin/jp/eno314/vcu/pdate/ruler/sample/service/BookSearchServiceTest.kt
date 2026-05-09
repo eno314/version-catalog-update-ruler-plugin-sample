@@ -33,7 +33,7 @@ class BookSearchServiceTest {
                     ),
             )
         every {
-            googleBooksRepository.searchByTitle(
+            googleBooksRepository.search(
                 title = "Clean Code",
                 googleApiKey = "test-key",
                 author = null,
@@ -65,7 +65,7 @@ class BookSearchServiceTest {
         val request = BookSearchRequest(title = "Kotlin", googleApiKey = "my-api-key")
         val dto = GoogleBooksSearchDto(totalItems = 0, books = emptyList())
         every {
-            googleBooksRepository.searchByTitle(
+            googleBooksRepository.search(
                 title = "Kotlin",
                 googleApiKey = "my-api-key",
                 author = null,
@@ -87,7 +87,7 @@ class BookSearchServiceTest {
         val request = BookSearchRequest(title = "Nonexistent", googleApiKey = "test-key")
         val dto = GoogleBooksSearchDto(totalItems = 0, books = emptyList())
         every {
-            googleBooksRepository.searchByTitle(
+            googleBooksRepository.search(
                 title = "Nonexistent",
                 googleApiKey = "test-key",
                 author = null,

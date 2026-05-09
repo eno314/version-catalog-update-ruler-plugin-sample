@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 class GoogleBooksRepository(
     private val googleBooksClient: GoogleBooksClient,
 ) {
-    fun searchByTitle(
+    fun search(
         title: String,
         googleApiKey: String?,
         author: String?,
