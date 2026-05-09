@@ -17,14 +17,14 @@ class GoogleBooksRepositoryTest {
     private val googleBooksRepository = GoogleBooksRepository(googleBooksClient)
 
     @Test
-    fun `searchByTitle should pass intitle query and googleBooksApiKey to client`() {
+    fun `searchByTitle should pass intitle query and googleApiKey to client`() {
         val requestSlot = slot<GoogleBooksSearchRemoteRequest>()
         every { googleBooksClient.search(capture(requestSlot)) } returns
             GoogleBooksSearchRemoteResponse(kind = null, totalItems = 0, items = emptyList())
 
         googleBooksRepository.searchByTitle(
             title = "Clean Code",
-            googleBooksApiKey = "test-key",
+            googleApiKey = "test-key",
             author = null,
             publisher = null,
             subject = null,
@@ -33,9 +33,28 @@ class GoogleBooksRepositoryTest {
         )
 
         assertThat(requestSlot.captured.query).isEqualTo("intitle:Clean Code")
-        assertThat(requestSlot.captured.googleBooksApiKey).isEqualTo("test-key")
+        assertThat(requestSlot.captured.googleApiKey).isEqualTo("test-key")
         assertThat(requestSlot.captured.printType).isEqualTo("all")
         assertThat(requestSlot.captured.langRestrict).isEqualTo("ja")
+    }
+
+    @Test
+    fun `searchByTitle should pass null googleApiKey to client when not specified`() {
+        val requestSlot = slot<GoogleBooksSearchRemoteRequest>()
+        every { googleBooksClient.search(capture(requestSlot)) } returns
+            GoogleBooksSearchRemoteResponse(kind = null, totalItems = 0, items = emptyList())
+
+        googleBooksRepository.searchByTitle(
+            title = "Clean Code",
+            googleApiKey = null,
+            author = null,
+            publisher = null,
+            subject = null,
+            printType = "all",
+            langRestrict = "ja",
+        )
+
+        assertThat(requestSlot.captured.googleApiKey).isNull()
     }
 
     @Test
@@ -46,7 +65,7 @@ class GoogleBooksRepositoryTest {
 
         googleBooksRepository.searchByTitle(
             title = "Clean Code",
-            googleBooksApiKey = "test-key",
+            googleApiKey = "test-key",
             author = "Robert C. Martin",
             publisher = "Prentice Hall",
             subject = "Programming",
@@ -92,7 +111,7 @@ class GoogleBooksRepositoryTest {
         val result =
             googleBooksRepository.searchByTitle(
                 title = "Clean Code",
-                googleBooksApiKey = "test-key",
+                googleApiKey = "test-key",
                 author = null,
                 publisher = null,
                 subject = null,
@@ -122,7 +141,7 @@ class GoogleBooksRepositoryTest {
         val result =
             googleBooksRepository.searchByTitle(
                 title = "Unknown",
-                googleBooksApiKey = "test-key",
+                googleApiKey = "test-key",
                 author = null,
                 publisher = null,
                 subject = null,
@@ -162,7 +181,7 @@ class GoogleBooksRepositoryTest {
         val result =
             googleBooksRepository.searchByTitle(
                 title = "Some Book",
-                googleBooksApiKey = "test-key",
+                googleApiKey = "test-key",
                 author = null,
                 publisher = null,
                 subject = null,

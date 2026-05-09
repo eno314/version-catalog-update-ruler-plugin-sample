@@ -14,7 +14,7 @@ class BookSearchServiceTest {
 
     @Test
     fun `searchBooks should map dto to response correctly`() {
-        val request = BookSearchRequest(title = "Clean Code", googleBooksApiKey = "test-key")
+        val request = BookSearchRequest(title = "Clean Code", googleApiKey = "test-key")
         val dto =
             GoogleBooksSearchDto(
                 totalItems = 1,
@@ -35,7 +35,7 @@ class BookSearchServiceTest {
         every {
             googleBooksRepository.searchByTitle(
                 title = "Clean Code",
-                googleBooksApiKey = "test-key",
+                googleApiKey = "test-key",
                 author = null,
                 publisher = null,
                 subject = null,
@@ -61,13 +61,13 @@ class BookSearchServiceTest {
     }
 
     @Test
-    fun `searchBooks should pass googleBooksApiKey to repository`() {
-        val request = BookSearchRequest(title = "Kotlin", googleBooksApiKey = "my-api-key")
+    fun `searchBooks should pass googleApiKey to repository`() {
+        val request = BookSearchRequest(title = "Kotlin", googleApiKey = "my-api-key")
         val dto = GoogleBooksSearchDto(totalItems = 0, books = emptyList())
         every {
             googleBooksRepository.searchByTitle(
                 title = "Kotlin",
-                googleBooksApiKey = "my-api-key",
+                googleApiKey = "my-api-key",
                 author = null,
                 publisher = null,
                 subject = null,
@@ -84,12 +84,12 @@ class BookSearchServiceTest {
 
     @Test
     fun `searchBooks should return empty books when dto has no books`() {
-        val request = BookSearchRequest(title = "Nonexistent", googleBooksApiKey = "test-key")
+        val request = BookSearchRequest(title = "Nonexistent", googleApiKey = "test-key")
         val dto = GoogleBooksSearchDto(totalItems = 0, books = emptyList())
         every {
             googleBooksRepository.searchByTitle(
                 title = "Nonexistent",
-                googleBooksApiKey = "test-key",
+                googleApiKey = "test-key",
                 author = null,
                 publisher = null,
                 subject = null,

@@ -11,7 +11,7 @@ class GoogleBooksRepository(
 ) {
     fun searchByTitle(
         title: String,
-        googleBooksApiKey: String,
+        googleApiKey: String?,
         author: String?,
         publisher: String?,
         subject: String?,
@@ -22,7 +22,7 @@ class GoogleBooksRepository(
         val remoteRequest =
             GoogleBooksSearchRemoteRequest(
                 query = query,
-                googleBooksApiKey = googleBooksApiKey,
+                googleApiKey = googleApiKey,
                 printType = printType,
                 langRestrict = langRestrict,
             )

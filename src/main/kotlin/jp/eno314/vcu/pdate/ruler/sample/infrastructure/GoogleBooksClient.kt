@@ -16,9 +16,12 @@ class GoogleBooksClient(
                 .newInstance()
                 .uri(java.net.URI.create(GOOGLE_BOOKS_BASE_URL))
                 .queryParam("q", request.query)
-                .queryParam("key", request.googleBooksApiKey)
-                .queryParam("printType", request.printType)
-                .queryParam("langRestrict", request.langRestrict)
+
+        request.googleApiKey?.let { uriBuilder.queryParam("key", it) }
+
+        uriBuilder
+            .queryParam("printType", request.printType)
+            .queryParam("langRestrict", request.langRestrict)
 
         val uri = uriBuilder.build().encode().toUri()
 

@@ -11,13 +11,14 @@ data class BookSearchRequest(
         required = true,
     )
     val title: String,
-    @field:NotBlank
     @field:Schema(
-        description = "Google Books API key (required).",
+        description =
+            "Google API key (optional). If not specified, " +
+                "the request will be made without an API key.",
         example = "YOUR_API_KEY",
-        required = true,
+        required = false,
     )
-    val googleBooksApiKey: String,
+    val googleApiKey: String? = null,
     @field:Schema(
         description =
             "Author name to filter books (optional). " +

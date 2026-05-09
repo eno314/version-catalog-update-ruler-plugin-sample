@@ -83,7 +83,7 @@ class BooksIntegrationTest {
         mockMvc
             .get("/api/books") {
                 param("title", "Clean Code")
-                param("googleBooksApiKey", "test-key")
+                param("googleApiKey", "test-key")
             }.andExpect {
                 status { isOk() }
                 jsonPath("$.total_items").value(1)
@@ -114,7 +114,7 @@ class BooksIntegrationTest {
         mockMvc
             .get("/api/books") {
                 param("title", "Kotlin")
-                param("googleBooksApiKey", "test-api-key")
+                param("googleApiKey", "test-api-key")
             }.andExpect {
                 status { isOk() }
                 jsonPath("$.total_items").value(0)
@@ -151,7 +151,7 @@ class BooksIntegrationTest {
         mockMvc
             .get("/api/books") {
                 param("title", japaneseTitle)
-                param("googleBooksApiKey", "test-key")
+                param("googleApiKey", "test-key")
             }.andExpect {
                 status { isOk() }
                 jsonPath("$.books[0].title").value(japaneseTitle)
@@ -170,13 +170,27 @@ class BooksIntegrationTest {
     }
 
     @Test
-    fun `searchBooks returns 400 Bad Request when googleBooksApiKey is missing`() {
+    fun `searchBooks returns 200 OK even when googleApiKey is missing`() {
+        mockServer
+            .expect(
+                requestToUriTemplate(
+                    "$GOOGLE_BOOKS_BASE_URL?q={q}&printType={printType}&langRestrict={langRestrict}",
+                    "intitle:Clean Code",
+                    "all",
+                    "ja",
+                ),
+            ).andExpect(method(HttpMethod.GET))
+            .andRespond(withSuccess(buildDummyResponse(1, dummyVolumeJson), MediaType.APPLICATION_JSON))
+
         mockMvc
             .get("/api/books") {
                 param("title", "Clean Code")
             }.andExpect {
-                status { isBadRequest() }
+                status { isOk() }
+                jsonPath("$.total_items").value(1)
             }
+
+        mockServer.verify()
     }
 
     @Test
@@ -184,7 +198,7 @@ class BooksIntegrationTest {
         mockMvc
             .get("/api/books") {
                 param("title", "")
-                param("googleBooksApiKey", "test-key")
+                param("googleApiKey", "test-key")
             }.andExpect {
                 status { isBadRequest() }
             }
@@ -212,7 +226,7 @@ class BooksIntegrationTest {
         mockMvc
             .get("/api/books") {
                 param("title", "UnknownXYZ")
-                param("googleBooksApiKey", "test-key")
+                param("googleApiKey", "test-key")
             }.andExpect {
                 status { isOk() }
                 jsonPath("$.total_items").value(0)
@@ -241,7 +255,7 @@ class BooksIntegrationTest {
         mockMvc
             .get("/api/books") {
                 param("title", "Clean Code")
-                param("googleBooksApiKey", "test-key")
+                param("googleApiKey", "test-key")
                 param("author", "Robert C. Martin")
                 param("publisher", "Prentice Hall")
                 param("subject", "Programming")
