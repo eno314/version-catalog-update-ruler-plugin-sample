@@ -70,4 +70,12 @@ versionCatalogUpdateRuler {
         pinMinorVersion.set(false)
         onlyArtifactVersion.set(true)
     }
+
+    library("org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin") {
+        pinMinorVersion.set(true)
+    }
+
+    library("org.jetbrains.kotlin.plugin.spring:org.jetbrains.kotlin.plugin.spring.gradle.plugin") {
+        pinMinorVersion.set(true)
+    }
 }
