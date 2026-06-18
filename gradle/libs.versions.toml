@@ -1,5 +1,5 @@
 [versions]
-detekt = "2.0.0-alpha.4"
+detekt = "2.0.0-alpha.5"
 kotlin = "2.4.0"
 ktlint = "14.2.0"
 mockk = "1.14.11"
