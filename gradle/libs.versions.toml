@@ -1,6 +1,6 @@
 [versions]
-detekt = "2.0.0-alpha.5"
-kotlin = "2.4.0"
+detekt = "2.0.0-alpha.6"
+kotlin = "2.4.10"
 ktlint = "14.2.0"
 mockk = "1.14.11"
 spring-boot = "4.1.0"
