@@ -79,9 +79,3 @@ versionCatalogUpdateRuler {
         pinMinorVersion.set(true)
     }
 }
-
-versionCatalogUpdate {
-    pin {
-        versions.set(listOf("kotlin"))
-    }
-}
