@@ -5,7 +5,7 @@ ktlint = "14.2.0"
 mockk = "1.14.11"
 spring-boot = "4.1.1"
 spring-dependency-management = "1.1.7"
-springdoc = "3.1.0"
+springdoc = "3.1.1"
 version-catalog-update-ruler = "0.1.5"
 
 [libraries]
